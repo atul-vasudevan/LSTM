@@ -20,10 +20,6 @@ class Network(tnn.Module):
         self.dropout = tnn.Dropout(0.7)
 
     def forward(self, input, length):
-        """
-        DO NOT MODIFY FUNCTION SIGNATURE
-        Create the forward pass through the network.
-        """
         x=tnn.utils.rnn.pack_padded_sequence(input=input,lengths=length,batch_first=True)
         x,(hn,cn)=self.lstm(x)
         output, output_lengths = tnn.utils.rnn.pad_packed_sequence(x)
@@ -36,10 +32,7 @@ class Network(tnn.Module):
 
 class PreProcessing():
     def pre(x):
-        """Called after tokenization"""
-        #words = ["a","an","and","are","as","at","be","by","for","from","in","it","is","its","of","on","that","the","to","with","i","me","my","we","our","of","his","him","he","she","her","hers","who","into","whose","himself"]
         stop_words = ["the", "a", "and","i","an","are","at","for","in","is",'it',"of","on","to","was","with"] 
-        #x = [replaceText(c) for c in x]
         x = [cleanText(c) for c in x if c and c not in set(punctuation)|set(stop_words)] 
         y=[]
         for a in x:
@@ -57,23 +50,7 @@ def cleanText(x):
         x=re.sub(r'https?:/\/\S+', ' ',x)
         return x.strip()
 
-'''def replaceText(x):
-    alt = {
-        ":-)": (":-)","good"),
-        ":)": (":)","good"),
-        ": )": (": )","good"),
-        ":(": (":(","bad"),
-        ": (": (": (","bad"),
-        ":-(": (":-(","bad")
-    }
-    if x in alt: x.replace(alt[x][0], alt[x][1])
-    return x'''
-
 def lossFunc():
-    """
-    Define a loss function appropriate for the above networks that will
-    add a sigmoid to the output and calculate the binary cross-entropy.
-    """
     return tnn.BCEWithLogitsLoss()
 
 
@@ -117,7 +94,6 @@ def main():
 
             loss = criterion(output, labels)
 
-            # Calculate gradients.
             loss.backward()
 
             # Minimise the loss according to the gradient.
